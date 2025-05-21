@@ -87,13 +87,15 @@ resources: {}
 
 # This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 livenessProbe:
+  initialDelaySeconds: 15
   httpGet:
     path: /
-    port: http
+    port: 8080
 readinessProbe:
+  initialDelaySeconds: 15 
   httpGet:
     path: /
-    port: http
+    port: 8080
 
 # This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling:
