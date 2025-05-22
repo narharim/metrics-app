@@ -42,7 +42,7 @@ spec:
           - name: PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.env.secretName }}
+                name: {{ include "metrics-app.fullname" . }}-secret
                 key: PASSWORD
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}

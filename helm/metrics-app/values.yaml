@@ -1,91 +1,32 @@
-# Default values for metrics-app.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+replicaCount: 3
 
-# This will set the replicaset count more information can be found here: https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/
-replicaCount: 1
-
-# This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:
   repository: ghcr.io/cloudraftio/metrics-app
-  # This sets the pull policy for images.
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
   tag: 1.4 
 
-# This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
-imagePullSecrets: []
-# This is to override the chart name.
-nameOverride: ""
-fullnameOverride: ""
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000
+  allowPrivilegeEscalation: false
 
-# This section builds out the service account more information can be found here: https://kubernetes.io/docs/concepts/security/service-accounts/
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Automatically mount a ServiceAccount's API credentials?
-  automount: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
 
-# This is for setting Kubernetes Annotations to a Pod.
-# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
-podAnnotations: {}
-# This is for setting Kubernetes Labels to a Pod.
-# For more information checkout: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
-podLabels: {}
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-# This is for setting up a service more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/
 service:
-  # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
   type: ClusterIP
-  # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
   port: 8080
 
-# This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+resources: 
+   limits:
+     cpu: 100m
+     memory: 128Mi
+   requests:
+     cpu: 100m
+     memory: 128Mi
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-# This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 livenessProbe:
   initialDelaySeconds: 15
   httpGet:
@@ -97,33 +38,9 @@ readinessProbe:
     path: /
     port: 8080
 
-# This section is for setting up autoscaling more information can be found here: https://kubernetes.io/docs/concepts/workloads/autoscaling/
 autoscaling:
   enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
 
-# Additional volumes on the output Deployment definition.
-volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
-
-# Additional volumeMounts on the output Deployment definition.
-volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-
-env: 
-  secretName: metrics-app-secret
+app:
+  sealedPassword: "AgBTsGsHrHOXnr616tzr/+YiqKDgjPnlHeVgZvp8xXuVxIzEHLWNRRTPOrQ5kM43LYx1vzEyi0UOQAX7LbBtAqXe5Y58oztZFrIFEuFJCd22f7I2mBHKMbGjSdwLqSISerowaNFAMCa3GE6K0uyOrcvjN4ktt7xxKT/Sna3BLMD1cXPpVMmCy/jaunvnqwo3V+c8xi+V1pHzUDqPc7IoP9g27Yz+jLdkR/Anu6Wulg4EdmpedmO9CrutBTr0li6CpDpIeRTKV0LdV9K3dClecNiFFrRTli6yt1GaRiS2KlABTo3M6dm+jyShpWKRw1oo6SDb4Rph6CfwHCDqWFD1hl0gjWM1hEnE+e7lnk1P4sbiSz76efMYaL6Y6JdKvL0SvYsCiH7PxUFM4v5cOn0CY88Elu+O6CKZ8wL+FE17iWCVHdtvNDp9lnFIEDPhpPmD3k0ePIzESFdXeYAAUqqgcUvRBDbrINrtu87GrNYDQGME30Zrxj2zaxW4ay6QwHAQC1Bv4QmdCRFtw4S35TR3lIrRrRs9EypA8DOiGo8vNqn4iwRX2KBxZz8fpFB4UKf7aitacz3Q50kLvpJtgsMZxhqfc+F3QZiXYpfcEgEmJvWHJREtXwhK1QIOcLM638bI0eLy62jGr7fPXLvPXtcESzdaJBEAMKQjDDN6NNsillxzifSle1nOiOvlkpKbBHk7fBCzKmSWripHYPOM"
 
