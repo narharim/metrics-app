@@ -14,6 +14,8 @@ securityContext:
   runAsUser: 1000
   allowPrivilegeEscalation: false
 
+ingress:
+  enabled: false
 
 service:
   type: ClusterIP

@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/narharim/metrics-app
+    repoURL: git@github.com:narharim/metrics-app.git 
     targetRevision: HEAD
     path: helm/metrics-app
     helm:
@@ -19,4 +19,3 @@ spec:
     automated:
       selfHeal: true
       prune: true
-
