@@ -34,11 +34,11 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           env:
-          - name: PASSWORD
+          - name: {{ .Values.env.password }}
             valueFrom:
               secretKeyRef:
                 name: {{ include "metrics-app.fullname" . }}-secret
-                key: PASSWORD
+                key: {{ .Values.env.password }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:

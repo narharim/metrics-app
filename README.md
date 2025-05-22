@@ -46,8 +46,7 @@ tar -xvzf kubeseal-0.29.0-linux-amd64.tar.gz kubeseal
 sudo install -m 755 kubeseal /usr/local/bin/kubeseal
 
 ```
-- Create sealedsecret
-https://github.com/bitnami-labs/sealed-secrets?tab=readme-ov-file#usage
+- Create [sealedsecret](https://github.com/bitnami-labs/sealed-secrets?tab=readme-ov-file#usage)
 
 ```bash
 echo -n MYPASSWORD | kubectl create secret generic mysecret --dry-run=client --from-file=PASSWORD=/dev/stdin -o yaml > mysecret.yaml
@@ -84,8 +83,8 @@ spec:
 
 ## 2. Setting up KIND Cluster
 
-1. Download the binary:
-https://github.com/kubernetes-sigs/kind/releases/download/v0.29.0/kind-linux-amd64
+1. Download the [Kind](https://github.com/kubernetes-sigs/kind/releases/download/v0.29.0/kind-linux-amd64) binary: 
+
 
 2. Create `kind-config.yaml` to have multi node cluster for HA
 ```yaml
@@ -117,10 +116,10 @@ complete -o default -F __start_kubectl k
 
 ## 3. ArgoCD Installation
 - Install ArgoCD on cluster 
-```bash
-kubectl create namespace argocd
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-```
+  ```bash
+  kubectl create namespace argocd
+  kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+  ```
 - Sanity check to see argocd-server is running
 	- use port forward to access UI in browser at `localhost:8080`
 	```bash
@@ -130,20 +129,13 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 	```
 	kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d && echo
 	```
-## 
-```yaml
-#values.yaml
-livenessProbe:
-  initialDelaySeconds: 15
-  httpGet:
-    path: /
-    port: 8080
-readinessProbe:
-  initialDelaySeconds: 15 
-  httpGet:
-    path: /
-    port: 8080
+- Configure ArgoCD to fetch Charts from private repo
+ 1. generate ssh key pair
+```bash
+ssh-keygen -t rsa -b 4096 -f argocd-ssh-key
 ```
+2. Add the public key to your GitHub
+3. Add the private key in ArgoCD UI
 
 ## **4. App Deployment**
 
@@ -188,7 +180,7 @@ done
 ```
 
 * My laptop got hung and I had to take a screenshot from my phone.
-* Insert Image #TODO
+* ![counter](./images/counter.jpeg)
 
 
 ## **7. Root Cause Analysis**
@@ -243,7 +235,6 @@ def generate_blocks():
 
 if __name__ == "__main__":
     generate_blocks()
-#
 ```
 - The above code runs an infinite loop for 1 million iterations and accumulates random values (busy work).
 - It also creates 5 bytearrays, each of size 100 MB.
@@ -280,4 +271,8 @@ ___
 	- secondly, we can restrict the process calling subprocess using seccomp, also we can restrict individual kernel calls (e.g.,`chmod` syscall)
 - Above will ensure that we have reduces the attack surface of the application
 ____
+
+![live](./images/live.png)
+
+___
 Thanks for amazing assignment. This the first time I interacted with argocd and helm comibned. Learnt a lot :)
