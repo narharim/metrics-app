@@ -15,7 +15,11 @@ securityContext:
   allowPrivilegeEscalation: false
 
 ingress:
-  enabled: false
+  hosts:
+    - host: "" 
+      paths:
+        - path: /
+          pathType: Prefix
 
 service:
   type: ClusterIP
