@@ -138,22 +138,38 @@ ssh-keygen -t rsa -b 4096 -f argocd-ssh-key
 3. Add the private key in ArgoCD UI
 
 ## **4. App Deployment**
+- deploy the app using ArgoCD via the Helm chart
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metrics-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:narharim/metrics-app.git 
+    targetRevision: v1.1 
+    path: helm/metrics-app
+    helm:
+      valueFiles:
+        - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
 
-[](https://github.com/cloudraftio/sre-assignment#3-app-deployment)
-
-- Use ArgoCD to deploy the app via the Helm chart, keeping best practices in mind.
-
+```
 ## **5. Ingress Setup**
 
-[](https://github.com/cloudraftio/sre-assignment#4-ingress-setup)
-
-- Set up an ingress resource (e.g., NGINX ingress controller) to expose the app externally at:
-    
-    ```
-    http://<your-local-url>/counter
-    ```
-    
-
+1. Install Ingress Setup
+```bash
+kubectl apply -f https://kind.sigs.k8s.io/examples/ingress/deploy-ingress-nginx.yaml
+```
+2. helmify ingress
 
 ## **6. Behaviour of Application**
 
@@ -273,6 +289,11 @@ ___
 ____
 
 ![live](./images/live.png)
-
 ___
-Thanks for amazing assignment. This the first time I interacted with argocd and helm comibned. Learnt a lot :)
+## **11. Additional Exploration**
+[Ingress resoure best practice](https://www.loft.sh/blog/kubernetes-nginx-ingress)
+[Helm x ArgoCD](https://argo-cd.readthedocs.io/en/latest/user-guide/helm/)
+____
+
+Thanks for amazing assignment. This the first time I interacted with argocd and helm. Learnt a lot :)
+

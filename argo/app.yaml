@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: git@github.com:narharim/metrics-app.git 
-    targetRevision: HEAD
+    targetRevision: v1.1 
     path: helm/metrics-app
     helm:
       valueFiles:
